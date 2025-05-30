@@ -1,0 +1,15 @@
+title: サンプル電子リフィル
+pages:
+  - id: 001
+    type: markdown
+    src: "pages/001.md"
+
+  - id: 002
+    type: image
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/800px-PNG_transparency_demonstration_1.png"
+    rotate: 0
+
+  - id: 003
+    type: pdf
+    src: "https://arxiv.org/pdf/1706.03762.pdf"
+    page: 1
