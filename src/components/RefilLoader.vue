@@ -2,7 +2,8 @@
 <template>
   <div v-if="!refilData">Loading...</div>
   <div v-else>
-    <PageViewer :page="currentPage" />
+    <PageViewer :page="currentPage" :key="currentPage.id" />
+
   </div>
 </template>
 
