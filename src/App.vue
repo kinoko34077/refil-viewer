@@ -1,20 +1,81 @@
-// App.vue（変更あり: 各ページに data-page-id を追加）
 <template>
-  <div class="viewer-root">
-    <Sidebar :pages="refilData.pages" :currentPageId="currentPage?.id" @selectPage="selectPage" />
+  <div class="viewer-root" :class="[displayMode + '-mode']">
+    <Sidebar
+      v-show="showSidebar"
+      :pages="refilData.pages"
+      :currentPageId="currentPage?.id"
+      @selectPage="selectPage"
+    />
     <div class="viewer-column">
-      <TopBar :pageNumber="pageIndex + 1" :totalPages="refilData.pages.length" @prev="prevPage" @next="nextPage" />
-      <div class="page-container" ref="containerRef" @scroll="handleScroll">
-        <div v-for="(page, idx) in refilData.pages" :key="page.id" :ref="el => pageRefs[idx] = el" class="page" :data-page-id="page.id">
-          <PageViewer :page="page" />
-        </div>
+      <TopBar
+        :pageNumber="pageIndex + 1"
+        :totalPages="refilData.pages.length"
+        :zoom="zoom"
+        :displayMode="displayMode"
+        :spreadMode="spreadMode"
+        :sidebarVisible="showSidebar"
+        @prev="prevPage"
+        @next="nextPage"
+        @zoom-in="zoomIn"
+        @zoom-out="zoomOut"
+        @set-display-mode="setDisplayMode"
+        @toggle-sidebar="toggleSidebar"
+      />
+      <div class="page-container" ref="containerRef">
+        <template v-if="displayMode === 'vertical'">
+          <div
+            v-for="(page, idx) in refilData.pages"
+            :key="page.id"
+            :ref="el => pageRefs[idx] = el"
+            class="page-wrapper"
+            :style="{ height: `${100 * zoom}vh` }"
+          >
+            <div class="page" :data-page-id="page.id" :style="{ transform: `scale(${zoom})`, transformOrigin: 'center center' }">
+              <PageViewer :page="page" />
+            </div>
+          </div>
+        </template>
+
+        <template v-else-if="displayMode === 'spread'">
+          <div class="spread-row" v-for="i in Math.ceil(refilData.pages.length / 2)" :key="i">
+            <template v-for="j in [0, 1]">
+              <div v-if="refilData.pages[i * 2 + j - 2]" class="spread-page">
+                <div
+                  :ref="el => pageRefs[i * 2 + j - 2] = el"
+                  class="page-wrapper"
+                  :style="{ width: `${50 * zoom}vw`, height: `${100 * zoom}vh` }"
+                >
+                  <div
+                    class="page"
+                    :data-page-id="refilData.pages[i * 2 + j - 2].id"
+                    :style="{ transform: `scale(${zoom})`, transformOrigin: 'center center' }"
+                  >
+                    <PageViewer :page="refilData.pages[i * 2 + j - 2]" />
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </template>
+
+        <template v-else-if="displayMode === 'horizontal'">
+          <div class="horizontal-slide-wrapper">
+            <div class="slide-page">
+              <div class="page" :data-page-id="refilData.pages[pageIndex].id" :style="{ transform: `scale(${zoom})`, transformOrigin: 'center center' }">
+                <PageViewer :page="refilData.pages[pageIndex]" />
+              </div>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
+
+
 <script setup>
-import { ref, reactive, onMounted, nextTick } from 'vue'
+import { ref, reactive, onMounted, computed, nextTick } from 'vue'
 import PageViewer from './components/PageViewer.vue'
 import Sidebar from './components/Sidebar.vue'
 import TopBar from './components/TopBar.vue'
@@ -29,6 +90,19 @@ const containerRef = ref(null)
 const urlParams = new URLSearchParams(window.location.search)
 const fileUrl = urlParams.get('file')
 const targetPageId = urlParams.get('page')
+const zoom = ref(1)
+const pageIndex = ref(0)
+const displayMode = ref('vertical') // 'vertical' | 'spread' | 'horizontal'
+const spreadMode = ref(false)
+const showSidebar = ref(true)
+
+function setDisplayMode(mode) {
+  displayMode.value = mode
+  pageIndex.value = 0
+}
+function toggleSidebar() {
+  showSidebar.value = !showSidebar.value
+}
 
 onMounted(async () => {
   const res = await fetch(fileUrl)
@@ -74,6 +148,15 @@ function nextPage() {
   if (pageIndex.value < refilData.pages.length - 1)
     selectPage(refilData.pages[pageIndex.value + 1].id)
 }
+
+function zoomIn() { zoom.value = Math.min(2, zoom.value + 0.1) }
+function zoomOut() { zoom.value = Math.max(0.5, zoom.value - 0.1) }
+function toggleDisplayMode() {
+  const modes = ['vertical', 'spread', 'horizontal']
+  const i = modes.indexOf(displayMode.value)
+  displayMode.value = modes[(i + 1) % modes.length]
+  nextTick(() => scrollToPage(pageIndex.value))
+}
 </script>
 
 <style>
@@ -88,17 +171,59 @@ function nextPage() {
   display: flex;
   flex-direction: column;
 }
-.page-container {
-  flex: 1;
+.vertical-mode .page-container {
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
 }
-.page {
+.vertical-mode .page-wrapper {
   scroll-snap-align: start;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+}
+.spread-mode .page-container {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.spread-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+.spread-page {
+  display: flex;
+  justify-content: center;
+}
+.horizontal-mode .page-container {
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+}
+.horizontal-slide-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slide-page {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.page-wrapper {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.page {
+  transition: transform 0.2s ease;
 }
 </style>

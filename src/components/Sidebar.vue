@@ -1,4 +1,4 @@
-// Sidebar.vue（v-bind:class 構文エラーの修正済）
+// Sidebar.vue（変更箇所のみ抽出）
 <template>
   <div class="sidebar">
     <div
@@ -7,56 +7,56 @@
       :class="['thumb', { active: p.id === currentPageId }]"
       @click="$emit('selectPage', p.id)"
     >
-      <img :src="getThumbnail(p)" />
+      <img :src="thumbnails[p.id] || getThumbnail(p)" />
       <div>{{ p.id }}</div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick } from 'vue'
+import { onMounted, reactive, watch } from 'vue'
 import html2canvas from 'html2canvas'
 
 const props = defineProps({ pages: Array, currentPageId: [String, Number] })
-const thumbnails = ref({})
+const thumbnails = reactive({})
 
-onMounted(() => {
-  nextTick().then(() => generateThumbnails())
-})
-
-watch(() => props.pages, () => {
-  nextTick().then(() => generateThumbnails())
-})
-
-function waitForPageReady(id) {
-  return new Promise(resolve => {
-    const el = document.querySelector(`[data-page-id='${id}']`)
-    if (!el) return resolve(null)
-    const handler = () => {
-      el.removeEventListener('page-ready', handler)
-      resolve(el)
-    }
-    el.addEventListener('page-ready', handler)
-  })
+function getThumbnail(p) {
+  if (p.type === 'image') return p.src
+  return 'https://via.placeholder.com/100x140?text=...'
 }
 
-async function generateThumbnails() {
-  for (const page of props.pages) {
-    if (thumbnails.value[page.id]) continue
-    const el = await waitForPageReady(page.id)
-    if (el) {
-      const canvas = await html2canvas(el, { scale: 0.2 })
-      thumbnails.value[page.id] = canvas.toDataURL('image/png')
+async function captureThumbnails() {
+  for (const p of props.pages) {
+    const el = document.querySelector(`[data-page-id="${p.id}"]`)
+    if (!el) continue
+
+    // 対象が画像のみの場合は画像の読込を待つ
+    const img = el.querySelector('img')
+    if (img) {
+      await new Promise(resolve => {
+        if (img.complete) resolve()
+        else img.onload = resolve
+      })
+    }
+
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 0.2,
+        useCORS: true
+      })
+      thumbnails[p.id] = canvas.toDataURL()
+    } catch (e) {
+      console.warn('Capture failed for page', p.id, e)
     }
   }
 }
 
-function getThumbnail(p) {
-  return thumbnails.value[p.id] ||
-    (p.type === 'image' ? p.src :
-     p.type === 'pdf' ? '/thumb/pdf.png' :
-     '/thumb/txt.png')
-}
+
+watch(() => props.pages, () => {
+  setTimeout(captureThumbnails, 500)
+})
+
+onMounted(() => setTimeout(captureThumbnails, 800))
 </script>
 
 <style scoped>

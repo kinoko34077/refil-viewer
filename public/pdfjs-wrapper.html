@@ -1,0 +1,63 @@
+<!-- public/pdfjs-wrapper.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Refil Viewer with PDF.js</title>
+    <style>
+      html, body, iframe {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe
+      id="pdfjs-viewer"
+      src="/pdfjs/web/viewer.html"
+      width="100%"
+      height="100%"
+      allowfullscreen
+    ></iframe>
+
+    <script>
+      const refilFileUrl = '/sample.refil'
+
+      async function fetchRefil() {
+        const res = await fetch(refilFileUrl)
+        const text = await res.text()
+        const refil = window.jsyaml.load(text)
+
+        const iframe = document.getElementById('pdfjs-viewer')
+        iframe.onload = () => {
+          const viewerWindow = iframe.contentWindow
+          viewerWindow.PDFViewerApplication.initializedPromise.then(() => {
+            const pageContainer = viewerWindow.document.getElementById('viewer')
+            pageContainer.innerHTML = ''
+
+            refil.pages.forEach((page, i) => {
+              const div = viewerWindow.document.createElement('div')
+              div.className = 'page'
+              div.style.height = '100vh'
+              div.style.display = 'flex'
+              div.style.alignItems = 'center'
+              div.style.justifyContent = 'center'
+              div.textContent = `Page ${i + 1} - ${page.type}`
+              // ここで type に応じて img / markdown / pdf canvas を差し替え予定
+              pageContainer.appendChild(div)
+            })
+          })
+        }
+      }
+
+      // jsyaml読み込み
+      const script = document.createElement('script')
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'
+      script.onload = fetchRefil
+      document.body.appendChild(script)
+    </script>
+  </body>
+</html>

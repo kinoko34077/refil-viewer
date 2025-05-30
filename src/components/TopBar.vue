@@ -1,14 +1,17 @@
-// TopBar.vue（新規追加）
+// TopBar.vue（ボタン追加）
 <template>
   <div class="topbar">
     <button @click="$emit('prev')">←</button>
     <span>{{ pageNumber }} / {{ totalPages }}</span>
     <button @click="$emit('next')">→</button>
+    <button @click="$emit('zoom-out')">−</button>
+    <button @click="$emit('zoom-in')">＋</button>
+    <button @click="$emit('toggle-display')">🌓</button>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({ pageNumber: Number, totalPages: Number })
+const props = defineProps({ pageNumber: Number, totalPages: Number, zoom: Number, displayMode: String })
 </script>
 
 <style scoped>
