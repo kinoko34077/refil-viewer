@@ -1,12 +1,12 @@
 # Current State
 
-Base version: `0.3.7`
+Base version: `0.3.8`
 
-Last verified: 2026-09-23 — KiNoTch Base v0.3.7 Canary adoption; existing Vite build currently fails on a duplicate `pageIndex` declaration in `src/App.vue`
+Last verified: 2026-09-23 — KiNoTch Base v0.3.8 Canary adoption; existing Vite build currently fails on a duplicate `pageIndex` declaration in `src/App.vue`
 
 ## Implemented
 
-- Repository-local KiNoTch Base v0.3.7 and Project Overlay
+- Repository-local KiNoTch Base v0.3.8 and Project Overlay
 - `web-app` Surface declaration
 - Structured `npm ci`, Vite development, and build commands
 - Existing Vue/Vite source, public assets, and viewer behavior retained
