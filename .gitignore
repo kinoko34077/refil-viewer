@@ -1,24 +1,50 @@
-# Logs
-logs
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Common dependency/build artifacts
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+target/
+dist/
+build/
+*.egg-info/
+coverage/
+.cache/
+.pytest_cache/
+.vite/
+
+# Runtime/log/temp
+logs/
+.tmp/
+tmp/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+.wrangler/
+artifacts/
+.mypy_cache/
+.ruff_cache/
+coverage.xml
+.coverage
+htmlcov/
+*.egg-info/
+.audit/
+*.audit.json
+playwright-report/
+test-results/
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# OS / editor
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+.vscode/
+.idea/
+
+# Project-local additions belong in project/.gitignore
+.superpowers/
