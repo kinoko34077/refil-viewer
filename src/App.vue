@@ -91,7 +91,6 @@ const urlParams = new URLSearchParams(window.location.search)
 const fileUrl = urlParams.get('file')
 const targetPageId = urlParams.get('page')
 const zoom = ref(1)
-const pageIndex = ref(0)
 const displayMode = ref('vertical') // 'vertical' | 'spread' | 'horizontal'
 const spreadMode = ref(false)
 const showSidebar = ref(true)
