@@ -2,7 +2,7 @@
 
 Base version: `0.3.8`
 
-Last verified: 2026-09-26 — Issue #3 navigation/context and load-recovery maintenance passed Project tests and Vite production build on branch `fix/issue-3-navigation-recovery` (Verify run `36235747062`)
+Last verified: 2026-09-26 — Issue #3 navigation/context and load-recovery maintenance passed Project tests and Vite production build on branch `fix/issue-3-navigation-recovery` (Verify run `36235803764`)
 
 ## Implemented
 
@@ -42,6 +42,7 @@ Last verified: 2026-09-26 — Issue #3 navigation/context and load-recovery main
 - PR #2 first fixed head `e88d6584e7508247618895a60b63f82ebfefb43b`: Verify Run `36121976028` completed successfully.
 - Issue #3 RED head `7058b35eca1c9729fea2bc3706468cb4f36e2a80`: Verify Run `36235628292` failed because the new navigation helper did not yet exist.
 - Issue #3 GREEN head `90aed5deb4dfbbfd4478c6434d0595805f6354b2`: Verify Run `36235747062` passed 6/6 viewer maintenance tests and the Vite production build.
+- Issue #3 Current State sync head `f971670e4f8c6476076d7714b41045d04315919c`: Verify Run `36235803764` passed after documentation synchronization.
 - `knt doctor`
 - `knt setup`
 - `knt test`
