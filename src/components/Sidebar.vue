@@ -1,15 +1,15 @@
-// Sidebar.vue（変更箇所のみ抽出）
 <template>
   <div class="sidebar">
-    <div
+    <button
       v-for="p in pages"
       :key="p.id"
+      type="button"
       :class="['thumb', { active: p.id === currentPageId }]"
       @click="$emit('selectPage', p.id)"
     >
-      <img :src="thumbnails[p.id] || getThumbnail(p)" />
-      <div>{{ p.id }}</div>
-    </div>
+      <img :src="thumbnails[p.id] || getThumbnail(p)" :alt="`Page ${p.id}`" />
+      <span>{{ p.id }}</span>
+    </button>
   </div>
 </template>
 
@@ -30,7 +30,6 @@ async function captureThumbnails() {
     const el = document.querySelector(`[data-page-id="${p.id}"]`)
     if (!el) continue
 
-    // 対象が画像のみの場合は画像の読込を待つ
     const img = el.querySelector('img')
     if (img) {
       await new Promise(resolve => {
@@ -51,7 +50,6 @@ async function captureThumbnails() {
   }
 }
 
-
 watch(() => props.pages, () => {
   setTimeout(captureThumbnails, 500)
 })
@@ -68,10 +66,21 @@ onMounted(() => setTimeout(captureThumbnails, 800))
   padding: 0.5rem;
 }
 .thumb {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
   cursor: pointer;
   margin-bottom: 0.75rem;
   text-align: center;
+  font: inherit;
   font-size: 0.8rem;
+}
+.thumb:focus-visible {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
 }
 .thumb img {
   width: 100%;
