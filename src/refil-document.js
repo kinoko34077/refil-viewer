@@ -28,7 +28,7 @@ function validatePage(page, index, seenIds) {
 
   const id = normalizePageId(page.id, index)
   if (seenIds.has(id)) {
-    throw new RefilFormatError(`Page ${index + 1}: duplicate page ID "${id}".`)
+    throw new RefilFormatError(`Page ${index + 1}: duplicate page ID.`)
   }
   seenIds.add(id)
 

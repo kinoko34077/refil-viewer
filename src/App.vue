@@ -158,9 +158,13 @@ async function loadRefil() {
     scrollToPage(pageIndex.value, 'auto')
   } catch (error) {
     console.error(error)
-    loadError.value = error instanceof RefilFormatError
-      ? `Invalid Refil document. ${error.message}`
-      : error instanceof Error ? error.message : String(error)
+    if (error instanceof RefilFormatError) {
+      loadError.value = `Invalid Refil document. ${error.message}`
+    } else {
+      refilData.pages = []
+      setCurrentPageIndex(0)
+      loadError.value = error instanceof Error ? error.message : String(error)
+    }
     loadState.value = 'error'
   }
 }

@@ -68,9 +68,11 @@ test('primary components do not reinterpret unknown types or query CSS by page I
   assert.match(markdownPage, /emit\(['"]page-ready['"]\)/)
 })
 
-test('App validates before commit and preserves last-good pages on load failure', () => {
+test('App validates before commit and preserves last-good pages only for format failures', () => {
   const app = readFileSync(new URL('../src/App.vue', import.meta.url), 'utf8')
   assert.match(app, /const validated = validateRefilDocument\(json\)[\s\S]*refilData\.pages = validated\.pages/)
-  const catchBody = app.match(/} catch \(error\) \{([\s\S]*?)\n  \}\n}\n\nonMounted/)?.[1] ?? ''
-  assert.doesNotMatch(catchBody, /refilData\.pages\s*=\s*\[\]/)
+  assert.match(
+    app,
+    /if \(error instanceof RefilFormatError\) \{[\s\S]*?loadError\.value[\s\S]*?\} else \{[\s\S]*?refilData\.pages\s*=\s*\[\][\s\S]*?setCurrentPageIndex\(0\)/,
+  )
 })
