@@ -2,7 +2,7 @@
 
 Base version: `0.3.8`
 
-Last verified: 2026-09-28 ? Issue #6 legacy PDF.js Refil execution-surface removal passed 8/8 Project tests, Vite production build, and the production-output absence gate on branch `fix/issue-6-disable-legacy-refil-pdfjs`.
+Last verified: 2026-09-28 - Issue #6 legacy PDF.js Refil execution-surface removal passed 8/8 Project tests, Vite production build, and the production-output absence gate on branch `fix/issue-6-disable-legacy-refil-pdfjs`.
 
 ## Implemented
 
