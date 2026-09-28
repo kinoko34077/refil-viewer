@@ -10,10 +10,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import MarkdownIt from 'markdown-it'
 
 const props = defineProps({ src: String, id: [String, Number] })
+const emit = defineEmits(['page-ready'])
 const html = ref('')
 const loadState = ref('loading')
 const loadError = ref('')
@@ -37,9 +38,7 @@ async function loadMarkdown() {
     html.value = md.render(text)
     loadState.value = 'ready'
 
-    await nextTick()
-    const el = document.querySelector(`[data-page-id='${props.id}']`)
-    el?.dispatchEvent(new Event('page-ready'))
+    emit('page-ready')
   } catch (error) {
     console.error(error)
     loadError.value = error instanceof Error ? error.message : String(error)

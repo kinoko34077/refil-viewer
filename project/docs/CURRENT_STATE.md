@@ -17,6 +17,9 @@ Last verified: 2026-09-26 — Issue #3 navigation/context and load-recovery main
 - Vertical/spread natural scrolling synchronizes current-page state from actual page visibility rather than viewport-height assumptions
 - Sidebar page entries use native buttons for keyboard activation
 - Refil and Markdown load failures expose user-visible error states with retry actions and HTTP-status checks
+- Refil page records are validated as one document before viewer-state commit: supported type, normalized unique ID, and required source are fail-closed.
+- Page readiness no longer constructs a CSS selector from document-provided page IDs; Markdown pages emit the component event directly.
+- Invalid Refil documents preserve the last accepted page set while exposing a bounded retryable load error.
 
 ## Default state
 
@@ -43,6 +46,7 @@ Last verified: 2026-09-26 — Issue #3 navigation/context and load-recovery main
 - Issue #3 RED head `7058b35eca1c9729fea2bc3706468cb4f36e2a80`: Verify Run `36235628292` failed because the new navigation helper did not yet exist.
 - Issue #3 GREEN head `90aed5deb4dfbbfd4478c6434d0595805f6354b2`: Verify Run `36235747062` passed 6/6 viewer maintenance tests and the Vite production build.
 - Issue #3 Current State sync head `f971670e4f8c6476076d7714b41045d04315919c`: Verify Run `36235803764` passed after documentation synchronization.
+- Issue #5 local implementation verification: 15/15 Project tests pass and the Vite production build succeeds; exact-head GitHub Verify and Formal Review are recorded on the Issue/PR before merge.
 - `knt doctor`
 - `knt setup`
 - `knt test`

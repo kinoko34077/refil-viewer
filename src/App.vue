@@ -89,6 +89,7 @@ import Sidebar from './components/Sidebar.vue'
 import TopBar from './components/TopBar.vue'
 import * as jsyaml from 'js-yaml'
 import { chooseMostVisiblePageIndex, cycleDisplayMode } from './viewer-navigation.js'
+import { RefilFormatError, validateRefilDocument } from './refil-document.js'
 
 const refilData = reactive({ pages: [] })
 const currentPage = ref(null)
@@ -147,11 +148,9 @@ async function loadRefil() {
 
     const yaml = await res.text()
     const json = jsyaml.load(yaml)
-    if (!json || !Array.isArray(json.pages)) {
-      throw new Error('Refil の pages 定義を読み取れませんでした。ファイル形式を確認してください。')
-    }
+    const validated = validateRefilDocument(json)
 
-    refilData.pages = json.pages
+    refilData.pages = validated.pages
     const foundIndex = refilData.pages.findIndex((page) => page.id === targetPageId)
     setCurrentPageIndex(foundIndex >= 0 ? foundIndex : 0)
     loadState.value = 'ready'
@@ -159,9 +158,13 @@ async function loadRefil() {
     scrollToPage(pageIndex.value, 'auto')
   } catch (error) {
     console.error(error)
-    refilData.pages = []
-    setCurrentPageIndex(0)
-    loadError.value = error instanceof Error ? error.message : String(error)
+    if (error instanceof RefilFormatError) {
+      loadError.value = `Invalid Refil document. ${error.message}`
+    } else {
+      refilData.pages = []
+      setCurrentPageIndex(0)
+      loadError.value = error instanceof Error ? error.message : String(error)
+    }
     loadState.value = 'error'
   }
 }
