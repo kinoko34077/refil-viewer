@@ -15,5 +15,5 @@ const component = {
   markdown: MarkdownPage,
   image: ImagePage,
   pdf: PDFPage,
-}[props.page.type] || MarkdownPage
+}[props.page.type]
 </script>

@@ -41,3 +41,15 @@ authoritative.
 - `public/pdfjs/web/viewer.html` may remain as a static PDF.js asset, but it is **not** a supported Refil document loader.
 - Legacy Refil-on-PDF.js glue (`public/pdfjs/web/refil-adapter.js` and `public/pdfjs-wrapper.html`) is not shipped.
 - Production verification must fail if those legacy Refil entry files or an adapter reference reappear in build output.
+
+## Refil page-record contract
+
+Before a loaded Refil document becomes current viewer state:
+
+- `pages` must be an array of page records;
+- each page ID must be a non-empty string or finite number and is normalized to a string identity;
+- normalized page IDs must be unique within the document;
+- supported page types are exactly `markdown`, `image`, and `pdf`; unknown types are invalid and are not reinterpreted as another type;
+- every supported page requires a non-empty string `src`;
+- validation completes for the whole document before `refilData.pages` is replaced; a validation failure keeps the previous/empty accepted document state and exposes one bounded load error;
+- page IDs are data identities, not CSS selector fragments. Page readiness is communicated through component events rather than selector construction from an ID.
