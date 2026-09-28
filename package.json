@@ -7,7 +7,7 @@
     "dev": "vite",
     "test": "node --test tests/*.test.mjs",
     "build": "vite build",
-    "verify": "npm test && npm run build",
+    "verify": "npm test && npm run build && node tests/build-output.check.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
