@@ -10,7 +10,7 @@ Project's implementation.
 
 ## Acceptance
 
-1. Existing Vue/Vite behavior remains unchanged.
+1. Existing Vue/Vite primary-viewer behavior remains unchanged.
 2. `knt doctor` validates the local Project Overlay and Base.
 3. `knt verify` reaches the existing Vite build gate.
 4. No Domain file is moved merely to satisfy the Base structure.
@@ -34,6 +34,13 @@ Project's implementation.
 The Base does not impose a framework, PWA structure, data format, or Runtime
 dependency on this Project. Existing implementation boundaries remain
 authoritative.
+
+## Supported browser entry surfaces
+
+- The supported Refil document surface is the primary Vue/Vite application (`src/main.js` -> `src/App.vue`).
+- `public/pdfjs/web/viewer.html` may remain as a static PDF.js asset, but it is **not** a supported Refil document loader.
+- Legacy Refil-on-PDF.js glue (`public/pdfjs/web/refil-adapter.js` and `public/pdfjs-wrapper.html`) is not shipped.
+- Production verification must fail if those legacy Refil entry files or an adapter reference reappear in build output.
 
 ## Refil page-record contract
 
