@@ -2,7 +2,7 @@
 
 Base version: `0.3.8`
 
-Last verified: 2026-09-29 — accepted main `183e9a66bbab2de0bff3c6efb58287b96e6df407` includes Issue #5 page-record validation and passed post-merge Verify run `36486478107`; Issue #6 remains branch-only pending integrated-head verification and different-reviewer approval.
+Last verified: 2026-09-29 — Issue #6 / PR #7 accepted on main `02c86bce848c3faf5f8c1a205189de785fa309a1`; post-main Verify run `36515794679` passed.
 
 ## Implemented
 
@@ -20,8 +20,8 @@ Last verified: 2026-09-29 — accepted main `183e9a66bbab2de0bff3c6efb58287b96e6
 - Refil page records are validated as one document before viewer-state commit: supported type, normalized unique ID, and required source are fail-closed.
 - Page readiness no longer constructs a CSS selector from document-provided page IDs; Markdown pages emit the component event directly.
 - Invalid Refil documents preserve the last accepted page set while exposing a bounded retryable load error.
-- The legacy public PDF.js Refil adapter/wrapper is unsupported and removed from shipped source on the Issue #6 branch; the supported Refil surface is the primary Vue/Vite application.
-- The Issue #6 branch extends `npm run verify` with a post-build check that rejects reintroduction of the legacy PDF.js Refil adapter/wrapper in production output.
+- The legacy public PDF.js Refil adapter/wrapper is unsupported and absent from accepted shipped source; the supported Refil surface is the primary Vue/Vite application.
+- `npm run verify` includes a post-build check that rejects reintroduction of the legacy PDF.js Refil adapter/wrapper in production output.
 
 ## Default state
 
@@ -50,7 +50,7 @@ Last verified: 2026-09-29 — accepted main `183e9a66bbab2de0bff3c6efb58287b96e6
 - Issue #3 GREEN head `90aed5deb4dfbbfd4478c6434d0595805f6354b2`: Verify Run `36235747062` passed 6/6 viewer maintenance tests and the Vite production build.
 - Issue #3 Current State sync head `f971670e4f8c6476076d7714b41045d04315919c`: Verify Run `36235803764` passed after documentation synchronization.
 - Issue #5 reviewed head `f10b1b52a04a7a1ad0ddd248f66ff511a0036309`: Verify Run `36486294332` passed 15/15 tests and the Vite production build; PR #10 merged as `183e9a66bbab2de0bff3c6efb58287b96e6df407` and post-merge Verify Run `36486478107` passed.
-- Issue #6 pre-integration head `9bd92605eea2cac4a5384eb8d9f008f5d2078f57`: Verify Run `36409576265` passed 8/8 tests, Vite production build, and the production-output absence gate. Current-main integration requires fresh exact-head verification/review.
+- Issue #6 / PR #7 integrated head `2dcd13cb2bc0a13e0717bb1ff3fceddf67541b37`: Verify Run `36486913934` passed; exact-head independent review approved the change; PR #7 merged as main `02c86bce848c3faf5f8c1a205189de785fa309a1` at 2026-09-29T03:08:07Z; post-main Verify `36515794679` passed.
 - The Windows `knt verify` wrapper promotes the pre-existing `pdfjs-dist` Rollup eval warning from stderr; this reproduces on unchanged main, so GitHub Verify remains the authoritative Base gate for affected branches.
 - `knt doctor`
 - `knt setup`
