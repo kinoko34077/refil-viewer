@@ -2,7 +2,7 @@
 
 Base version: `0.3.8`
 
-Last verified: 2026-09-29 — Issue #6 / PR #7 accepted on main `02c86bce848c3faf5f8c1a205189de785fa309a1`; post-main Verify run `36515794679` passed.
+Last verified: 2026-10-04 — Issue #13 / PR #14 accepted on main `64bb3143deeb12dd533fad9575b1ff018dad2a42`; post-main Verify `37155116440` passed.
 
 ## Implemented
 
@@ -60,4 +60,5 @@ Last verified: 2026-09-29 — Issue #6 / PR #7 accepted on main `02c86bce848c3fa
 - `knt test`
 - Issue #13 RED head `fd28feefb9e3894e62c7dd296c6e4923db016fce`: Verify `37154691509` failed only the three new PDF worker/recovery contract tests while all 17 existing tests passed.
 - Issue #13 GREEN implementation head `896316979e93d009efbe546cc2a16b640e5096f5`: Verify `37154797550` passed 23/23 tests and Vite production build; build output included a bundled `pdf.worker.min-*.js` asset.
+- Issue #13 / PR #14 final reviewed head `c19892eac90be7c9d3ded32efac83df1c0c4e98b`: Verify `37154985904` passed; squash merge `64bb3143deeb12dd533fad9575b1ff018dad2a42`; post-main Verify `37155116440` passed.
 - `knt verify`
