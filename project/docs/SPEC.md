@@ -41,6 +41,8 @@ authoritative.
 - `public/pdfjs/web/viewer.html` may remain as a static PDF.js asset, but it is **not** a supported Refil document loader.
 - Legacy Refil-on-PDF.js glue (`public/pdfjs/web/refil-adapter.js` and `public/pdfjs-wrapper.html`) is not shipped.
 - Production verification must fail if those legacy Refil entry files or an adapter reference reappear in build output.
+- The primary PDF page uses the repository-managed `pdfjs-dist` worker asset bundled by Vite; it must not fetch a PDF.js worker executable from a third-party CDN at runtime.
+- PDF load/page-selection/canvas/render failures are user-visible bounded errors with an in-place retry action; successful rendering emits `page-ready` only after the render promise completes.
 
 ## Refil page-record contract
 

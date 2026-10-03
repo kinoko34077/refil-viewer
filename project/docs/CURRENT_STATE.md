@@ -22,6 +22,8 @@ Last verified: 2026-09-29 — Issue #6 / PR #7 accepted on main `02c86bce848c3fa
 - Invalid Refil documents preserve the last accepted page set while exposing a bounded retryable load error.
 - The legacy public PDF.js Refil adapter/wrapper is unsupported and absent from accepted shipped source; the supported Refil surface is the primary Vue/Vite application.
 - `npm run verify` includes a post-build check that rejects reintroduction of the legacy PDF.js Refil adapter/wrapper in production output.
+- PDF pages use the repository-managed `pdfjs-dist` worker bundled into production output; runtime cdnjs worker loading is removed.
+- PDF load/page/canvas/render failures expose a visible retryable error state, while successful render emits `page-ready` only after render completion (#13).
 
 ## Default state
 
@@ -34,6 +36,7 @@ Last verified: 2026-09-29 — Issue #6 / PR #7 accepted on main `02c86bce848c3fa
 - Browser-specific scroll feel, focus behavior, thumbnail timing, and layout at different zoom/viewport combinations remain manual smoke-test boundaries even though current-page selection logic is covered by deterministic tests.
 - The Base does not generate a framework or viewer-specific helper.
 - The static `public/pdfjs/web/viewer.html` asset is not a supported Refil loader and must not load `refil-adapter.js`.
+- External PDF `src` URLs remain allowed by the current product contract; #13 changes worker supply/recovery only and does not impose an offline or same-origin policy.
 
 ## Next work
 
@@ -55,4 +58,6 @@ Last verified: 2026-09-29 — Issue #6 / PR #7 accepted on main `02c86bce848c3fa
 - `knt doctor`
 - `knt setup`
 - `knt test`
+- Issue #13 RED head `fd28feefb9e3894e62c7dd296c6e4923db016fce`: Verify `37154691509` failed only the three new PDF worker/recovery contract tests while all 17 existing tests passed.
+- Issue #13 GREEN implementation head `896316979e93d009efbe546cc2a16b640e5096f5`: Verify `37154797550` passed 23/23 tests and Vite production build; build output included a bundled `pdf.worker.min-*.js` asset.
 - `knt verify`
