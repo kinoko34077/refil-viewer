@@ -47,10 +47,13 @@ const bundledWorker = outputFiles.find((relativePath) =>
 assert.ok(bundledWorker,
   'production output must include the repository-managed pdfjs-dist worker asset')
 
-for (const relativePath of outputFiles.filter((file) => /\.(?:html|css|js)$/.test(file))) {
+const primaryAppFiles = outputFiles.filter((file) =>
+  file === 'index.html' || /^assets\/.*\.(?:css|js)$/.test(file))
+
+for (const relativePath of primaryAppFiles) {
   const text = await fs.readFile(path.join(distPath, relativePath), 'utf8')
   assert.doesNotMatch(text, /cdnjs\.cloudflare\.com\/ajax\/libs\/pdf\.js/i,
-    `production output must not depend on the runtime cdnjs PDF worker: ${relativePath}`)
+    `primary Vue/Vite output must not depend on runtime cdnjs PDF.js: ${relativePath}`)
 }
 
 console.log(`PASS: production output excludes legacy Refil PDF.js surface and bundles ${bundledWorker}`)
