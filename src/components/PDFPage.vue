@@ -1,44 +1,76 @@
-// PDFPage.vue（修正版：CDN経由でworker指定）
 <template>
   <div class="pdf-wrapper">
-    <canvas ref="canvasRef"></canvas>
+    <div v-if="loadState === 'loading'" class="pdf-status" role="status">
+      PDF を読み込んでいます…
+    </div>
+
+    <div v-else-if="loadState === 'error'" class="pdf-status pdf-error" role="alert">
+      <p>{{ loadError }}</p>
+      <button type="button" @click="loadPdf">再試行</button>
+    </div>
+
+    <canvas ref="canvasRef" v-show="loadState === 'ready'"></canvas>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps, defineEmits } from 'vue'
+import { ref, onMounted } from 'vue'
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist'
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url'
+import { renderPdfPage } from '../pdf-page-loader.js'
 
 const props = defineProps({ src: String, page: Number })
 const emit = defineEmits(['page-ready'])
 const canvasRef = ref(null)
+const loadState = ref('loading')
+const loadError = ref('')
 
-onMounted(async () => {
-  // ✅ CDNでworker指定（Viteのworkerバンドル問題回避）
-  GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 
-  const loadingTask = getDocument(props.src)
-  const pdf = await loadingTask.promise
-  const pageNum = props.page || 1
-  const pdfPage = await pdf.getPage(pageNum)
+async function loadPdf() {
+  loadState.value = 'loading'
+  loadError.value = ''
 
-  const viewport = pdfPage.getViewport({ scale: 1.5 })
-  const canvas = canvasRef.value
-  const context = canvas.getContext('2d')
-  canvas.height = viewport.height
-  canvas.width = viewport.width
+  try {
+    await renderPdfPage({
+      src: props.src,
+      page: props.page,
+      canvas: canvasRef.value,
+      getDocument,
+    })
 
-  await pdfPage.render({ canvasContext: context, viewport }).promise
-  emit('page-ready')
-})
+    loadState.value = 'ready'
+    emit('page-ready')
+  } catch (error) {
+    console.error(error)
+    const message = error instanceof Error ? error.message : String(error)
+    loadError.value = message || 'PDF の読み込みまたは描画に失敗しました。'
+    loadState.value = 'error'
+  }
+}
+
+onMounted(loadPdf)
 </script>
 
 <style scoped>
 .pdf-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  min-height: 8rem;
+  display: grid;
+  place-items: center;
 }
+
+.pdf-status {
+  display: grid;
+  place-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.pdf-error p {
+  margin: 0;
+}
+
 canvas {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
