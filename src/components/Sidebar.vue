@@ -18,7 +18,7 @@ import { onMounted, reactive, watch } from 'vue'
 import html2canvas from 'html2canvas'
 
 const props = defineProps({ pages: Array, currentPageId: [String, Number] })
-const thumbnails = reactive({})
+const thumbnails = reactive(Object.create(null))
 
 function getThumbnail(p) {
   if (p.type === 'image') return p.src
