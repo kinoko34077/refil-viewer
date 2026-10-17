@@ -18,7 +18,7 @@ import { onMounted, reactive, watch } from 'vue'
 import html2canvas from 'html2canvas'
 
 const props = defineProps({ pages: Array, currentPageId: [String, Number] })
-const thumbnails = reactive({})
+const thumbnails = reactive(Object.create(null))
 
 function getThumbnail(p) {
   if (p.type === 'image') return p.src
@@ -26,8 +26,10 @@ function getThumbnail(p) {
 }
 
 async function captureThumbnails() {
+  const pageElements = Array.from(document.querySelectorAll('[data-page-id]'))
   for (const p of props.pages) {
-    const el = document.querySelector(`[data-page-id="${p.id}"]`)
+    const pageId = String(p.id)
+    const el = pageElements.find(element => element.dataset.pageId === pageId)
     if (!el) continue
 
     const img = el.querySelector('img')
